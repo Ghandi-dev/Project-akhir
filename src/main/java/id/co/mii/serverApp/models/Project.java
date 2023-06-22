@@ -1,6 +1,7 @@
 package id.co.mii.serverApp.models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,10 +32,10 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 30)
     private String name;
     
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String client;
 
     @Column(nullable = false, columnDefinition = "text")
@@ -49,8 +52,11 @@ public class Project {
     @Column(nullable = false)
     private Integer budget;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_team_project", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    private List<Employee> employees;
 }

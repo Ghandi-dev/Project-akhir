@@ -1,5 +1,6 @@
 package id.co.mii.serverApp.models;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,7 +40,12 @@ public class History {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "overtime_id")
     private Overtime overtime;
+
+    @PrePersist
+    public void prePersist() {
+        this.createAt = new Timestamp(System.currentTimeMillis());
+    }
 }

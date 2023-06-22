@@ -51,13 +51,13 @@ public class Overtime {
     @Column(nullable = false, name = "overtime_pay")
     private Integer overtimePay;
 
-    @Column(nullable = false, columnDefinition = "text")
+    @Column(columnDefinition = "text")
     private String message;
 
     @Enumerated(EnumType.STRING)
     private OvertimeStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 

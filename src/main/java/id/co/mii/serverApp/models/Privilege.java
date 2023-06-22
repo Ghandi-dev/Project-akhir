@@ -24,7 +24,7 @@ public class Privilege {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String name;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
