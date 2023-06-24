@@ -35,6 +35,8 @@ public class User {
     @Column(nullable = false, length = 50)
     private String photo;
 
+    private Boolean isEnabled;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")

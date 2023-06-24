@@ -9,6 +9,8 @@ import id.co.mii.serverApp.models.dto.response.LoginResponse;
 import id.co.mii.serverApp.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,6 +34,8 @@ public class AuthService {
   private PasswordEncoder passwordEncoder;
   private AuthenticationManager authenticationManager;
   private AppUserDetailService appUserDetailService;
+  private final VerificationTokenService verificationTokenService;
+  private EmailService emailService;
 
   public User register(UserRequest userRequest) {
     Employee employee = modelMapper.map(userRequest, Employee.class);
@@ -44,6 +48,7 @@ public class AuthService {
     List<Role> roles = new ArrayList<>();
     roles.add(roleService.getById(2));
     user.setRoles(roles);
+    user.setIsEnabled(false);
     // user.setRoles(roleService.getById(2));
 
     // set Manager
@@ -54,7 +59,21 @@ public class AuthService {
     // set password
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-    return userRepository.save(user);
+    Optional<User> saved = Optional.of(userRepository.save(user));
+
+    saved.ifPresent(u ->{
+        try {
+            String token = UUID.randomUUID().toString();
+            verificationTokenService.save(saved.get(), token);
+            // send email
+            emailService.sendHtmlEmail(u);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    });
+
+    return saved.get();
   }
 
   public LoginResponse login(LoginRequest loginRequest) {

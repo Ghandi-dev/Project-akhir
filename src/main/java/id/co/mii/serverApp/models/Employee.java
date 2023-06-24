@@ -52,10 +52,11 @@ public class Employee {
     private Job job;
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @PrimaryKeyJoinColumn
     private User user;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Project> projects;
 

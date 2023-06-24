@@ -20,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,18 +32,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_overtime")
 public class Overtime {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, name = "job_task")
     private String jobTask;
-    
+
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date date;
-    
+
     @Column(nullable = false)
     private Time start;
 
@@ -55,12 +57,18 @@ public class Overtime {
     private String message;
 
     @Enumerated(EnumType.STRING)
-    private OvertimeStatus status;
+    private OvertimeStatus status = OvertimeStatus.PROCESS;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "project_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Project project;
+
     @OneToMany(mappedBy = "overtime", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<History> histories;
 }
