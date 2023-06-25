@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.co.mii.serverApp.models.Project;
-import id.co.mii.serverApp.models.dto.response.ProjectResponse;
+import id.co.mii.serverApp.models.dto.request.ProjectRequest;
 import id.co.mii.serverApp.services.ProjectService;
 import lombok.AllArgsConstructor;
 
@@ -27,19 +27,14 @@ public class ProjectController {
         return projectService.getAll();
     }
 
-    // @GetMapping("/dto")
-    // public List<ProjectResponse> getAllWithDto() {
-    //     return projectService.getAllWithDto();
-    // }
-
     @GetMapping("/{id}")
     public Project getById(@PathVariable Integer id) {
         return projectService.getById(id);
     }
 
     @PostMapping
-    public Project create(@RequestBody Project project) {
-        return projectService.create(project);
+    public Project create(@RequestBody ProjectRequest projectRequest) {
+        return projectService.create(projectRequest);
     }
 
     @PutMapping("/{id}")

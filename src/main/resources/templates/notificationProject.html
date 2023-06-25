@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve</title>
+</head>
+
+<body>
+    <table>
+        <th>
+            <tr>
+                <td>No</td>
+                <td>Nama</td>
+            </tr>
+        </th>
+        <tbody>
+            <tr th:each="employee, key : ${employees}">
+                <td th:text="${key.count}"></td>
+                <td th:text="${employee.name}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

@@ -1,5 +1,8 @@
 package id.co.mii.serverApp.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -76,7 +79,21 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(overtime.getEmployee().getEmail());
-        helper.setSubject("Approve notification");
+        helper.setSubject("Approve Notification");
+        helper.setText(body, true);
+        javaMailSender.send(message);
+    }
+
+    // send notification project created to employee
+    public void sendProjectNotification(List<Employee> employees) throws MessagingException {
+        Context context = new Context();
+        List<String> receipents = employees.stream().map(e -> e.getEmail()).collect(Collectors.toList());
+        context.setVariable("employees", employees);
+        String body = templateEngine.process("notificationProject", context);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(receipents.toArray(new String[0]));
+        helper.setSubject("New Project Notification");
         helper.setText(body, true);
         javaMailSender.send(message);
     }

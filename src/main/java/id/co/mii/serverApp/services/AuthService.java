@@ -47,10 +47,9 @@ public class AuthService {
 
         // set default role
         List<Role> roles = new ArrayList<>();
-        roles.add(roleService.getById(2));
+        roles.add(roleService.getById(3));
         user.setRoles(roles);
         user.setIsEnabled(false);
-        // user.setRoles(roleService.getById(2));
 
         // set Manager
         employee.setManager(employeeService.getById(userRequest.getManagerId()));
