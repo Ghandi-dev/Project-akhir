@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,85 +27,90 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AuthService {
 
-  private UserRepository userRepository;
-  private EmployeeService employeeService;
-  private JobService jobService;
-  private ModelMapper modelMapper;
-  private RoleService roleService;
-  private PasswordEncoder passwordEncoder;
-  private AuthenticationManager authenticationManager;
-  private AppUserDetailService appUserDetailService;
-  private final VerificationTokenService verificationTokenService;
-  private EmailService emailService;
+    private UserRepository userRepository;
+    private EmployeeService employeeService;
+    private JobService jobService;
+    private ModelMapper modelMapper;
+    private RoleService roleService;
+    private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManager;
+    private AppUserDetailService appUserDetailService;
+    private final VerificationTokenService verificationTokenService;
+    private EmailService emailService;
 
-  public User register(UserRequest userRequest) {
-    Employee employee = modelMapper.map(userRequest, Employee.class);
-    User user = modelMapper.map(userRequest, User.class);
+    public User register(UserRequest userRequest) {
+        Employee employee = modelMapper.map(userRequest, Employee.class);
+        User user = modelMapper.map(userRequest, User.class);
 
-    employee.setUser(user);
-    user.setEmployee(employee);
+        employee.setUser(user);
+        user.setEmployee(employee);
 
-    // set default role
-    List<Role> roles = new ArrayList<>();
-    roles.add(roleService.getById(2));
-    user.setRoles(roles);
-    user.setIsEnabled(false);
-    // user.setRoles(roleService.getById(2));
+        // set default role
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleService.getById(2));
+        user.setRoles(roles);
+        user.setIsEnabled(false);
+        // user.setRoles(roleService.getById(2));
 
-    // set Manager
-    employee.setManager(employeeService.getById(userRequest.getManagerId()));
+        // set Manager
+        employee.setManager(employeeService.getById(userRequest.getManagerId()));
 
-    // set Job
-    employee.setJob(jobService.getById(userRequest.getJobId()));
-    // set password
-    user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        // set Job
+        employee.setJob(jobService.getById(userRequest.getJobId()));
+        // set password
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        
+        Optional<User> saved = Optional.of(userRepository.save(user));
+        
+        saved.ifPresent(u -> {
+            try {
+                String token = UUID.randomUUID().toString();
+                verificationTokenService.save(saved.get(), token);
+                // send email
+                emailService.sendHtmlEmail(u,userRequest);
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+        return saved.get();
+    }
 
-    Optional<User> saved = Optional.of(userRepository.save(user));
+    public LoginResponse login(LoginRequest loginRequest) {
+        // authentication => login request = username & password
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(),
+                loginRequest.getPassword());
 
-    saved.ifPresent(u ->{
-        try {
-            String token = UUID.randomUUID().toString();
-            verificationTokenService.save(saved.get(), token);
-            // send email
-            emailService.sendHtmlEmail(u);
+        // set principle
+        Authentication auth = authenticationManager.authenticate(authReq);
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        User user = userRepository
+                .findByUsernameOrEmployee_Email(
+                        loginRequest.getUsername(),
+                        loginRequest.getUsername())
+                .get();
+
+        if (!user.getIsEnabled()) {
+            System.out.println("User is disabled");
+            throw new DisabledException("User is disabled");
         }
-    });
 
-    return saved.get();
-  }
+        UserDetails userDetails = appUserDetailService.loadUserByUsername(
+                loginRequest.getUsername());
 
-  public LoginResponse login(LoginRequest loginRequest) {
-    // authentication => login request = username & password
-    UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(
-        loginRequest.getUsername(),
-        loginRequest.getPassword());
+        List<String> authorities = userDetails
+                .getAuthorities()
+                .stream()
+                .map(authority -> authority.getAuthority())
+                .collect(Collectors.toList());
 
-    // set principle
-    Authentication auth = authenticationManager.authenticate(authReq);
-    SecurityContextHolder.getContext().setAuthentication(auth);
-
-    User user = userRepository
-        .findByUsernameOrEmployee_Email(
-            loginRequest.getUsername(),
-            loginRequest.getUsername())
-        .get();
-
-    UserDetails userDetails = appUserDetailService.loadUserByUsername(
-        loginRequest.getUsername());
-
-    List<String> authorities = userDetails
-        .getAuthorities()
-        .stream()
-        .map(authority -> authority.getAuthority())
-        .collect(Collectors.toList());
-
-    // response => user detail = username, email, List<GrantedAuthority>
-    return new LoginResponse(
-        user.getUsername(),
-        user.getEmployee().getEmail(),
-        authorities);
-  }
+        // response => user detail = username, email, List<GrantedAuthority>
+        return new LoginResponse(
+                user.getUsername(),
+                user.getEmployee().getEmail(),
+                authorities);
+    }
 }

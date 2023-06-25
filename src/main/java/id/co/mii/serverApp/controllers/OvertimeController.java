@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.co.mii.serverApp.models.Overtime;
@@ -46,5 +47,11 @@ public class OvertimeController {
     @DeleteMapping("/{id}")
     public Overtime delete(@PathVariable Integer id) {
         return overtimeService.delete(id);
+    }
+
+    @PutMapping("/approve/{id}")
+    public Overtime approveOvertime(@PathVariable Integer id, @RequestBody Overtime overtime,
+            @RequestParam("role") String role) {
+        return overtimeService.approveOvertime(id, overtime, role);
     }
 }

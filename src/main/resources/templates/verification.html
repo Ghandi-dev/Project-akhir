@@ -10,6 +10,16 @@
 <body>
     <div class="container">
         <h3 th:text="${title}">Title</h3>
+        <table border="2">
+            <tr>
+                <td>username: </td>
+                <td th:text="${username}"></td>
+            </tr>
+            <tr>
+                <td>password: </td>
+                <td th:text="${password}"></td>
+            </tr>
+        </table>
         <p>please activation your account</p>
         <a th:href="${link}" th:text="${link}">LINK</a>
     </div>

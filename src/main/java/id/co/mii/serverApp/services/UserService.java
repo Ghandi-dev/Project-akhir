@@ -56,7 +56,6 @@ public class UserService {
     public User update(Integer id, User user) {
         getById(id);
         user.setId(id);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

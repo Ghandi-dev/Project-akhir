@@ -19,40 +19,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private AppUserDetailService appUserDetailService;
-  private PasswordEncoder passwordEncoder;
+    private AppUserDetailService appUserDetailService;
+    private PasswordEncoder passwordEncoder;
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth
-        .userDetailsService(appUserDetailService)
-        .passwordEncoder(passwordEncoder);
-  }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(appUserDetailService)
+                .passwordEncoder(passwordEncoder);
+    }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http
-        .csrf()
-        .disable()
-        .cors()
-        .disable()
-        .authorizeRequests()
-        .antMatchers(HttpMethod.POST, "/register")
-        .permitAll()
-        .antMatchers(HttpMethod.POST, "/login")
-        .permitAll()
-        .antMatchers( "/activation")
-        .permitAll()
-        .anyRequest()
-        .authenticated()
-        .and()
-        .httpBasic();
-  }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf()
+                .disable()
+                .cors()
+                .disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/register")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/login")
+                .permitAll()
+                .antMatchers("/activation", "/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
+    }
 
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
-

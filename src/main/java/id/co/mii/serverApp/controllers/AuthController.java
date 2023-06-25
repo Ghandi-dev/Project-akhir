@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import groovyjarjarantlr4.v4.parse.ANTLRParser.prequelConstruct_return;
 import id.co.mii.serverApp.models.User;
 import id.co.mii.serverApp.models.VerificationToken;
 import id.co.mii.serverApp.models.dto.request.LoginRequest;
@@ -55,10 +54,11 @@ public class AuthController {
                 if (verificationToken.getExpiryDate().before(curenTimestamp)) {
                     model.addAttribute("message", "Your verification token has expired");
                 } else {
+                    model.addAttribute("message", "Congrats");
                     user.setIsEnabled(true);
                     userService.update(user.getId(), user);
                 }
-            }else{
+            } else {
                 model.addAttribute("message", "your account is already activated");
             }
         }
