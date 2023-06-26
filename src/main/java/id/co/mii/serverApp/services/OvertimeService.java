@@ -36,17 +36,17 @@ public class OvertimeService {
 
     public Overtime create(Overtime overtime) {
         overtime.setEmployee(employeeService.getById(overtime.getEmployee().getId()));
-        overtimeRepository.save(overtime);
+        Overtime response = overtimeRepository.save(overtime);
         History history = new History();
-        history.setOvertime(overtime);
-        history.setStatus(overtime.getStatus());
+        history.setOvertime(response);
+        history.setStatus(response.getStatus());
         historyService.create(history);
         try {
-            emailService.sendRequestNotificationByEmail(overtime);
+            emailService.sendRequestNotificationByEmail(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return overtime;
+        return response;
     }
 
     public Overtime update(Integer id, Overtime overtime) {
@@ -60,9 +60,9 @@ public class OvertimeService {
         return overtime;
     }
 
-    public Overtime approveOvertime(Integer id, Overtime overtime, String role) {
+    public Overtime approveOvertime(Integer id, Integer projectId, String role) {
         History history = new History();
-        overtime.setEmployee(employeeService.getById(overtime.getEmployee().getId()));
+        Overtime overtime = getById(id);
         if (role.equalsIgnoreCase("manager")) {
             overtime.setStatus(OvertimeStatus.APPROVED_MANAGER);
             try {
@@ -72,7 +72,7 @@ public class OvertimeService {
             }
         } else {
             overtime.setStatus(OvertimeStatus.APPROVED_HR);
-            projectService.updateBudget(id,
+            projectService.updateBudget(projectId,
                     overtime.getOvertimePay());
             try {
                 emailService.sendApprovedNotification(overtime, role);
@@ -80,10 +80,10 @@ public class OvertimeService {
                 e.printStackTrace();
             }
         }
-        update(id, overtime);
-        history.setOvertime(overtime);
-        history.setStatus(overtime.getStatus());
+        Overtime response = update(id, overtime);
+        history.setOvertime(response);
+        history.setStatus(response.getStatus());
         historyService.create(history);
-        return overtime;
+        return response;
     }
 }

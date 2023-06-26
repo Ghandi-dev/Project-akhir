@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.co.mii.serverApp.models.Employee;
@@ -28,6 +29,16 @@ public class EmployeeController {
         return employeeService.getAll();
     }
 
+    @GetMapping("/manager")
+    public List<Employee> getByManagerId(@RequestParam("managerId") Integer id) {
+        return employeeService.getByManagerId(id);
+    }
+
+    @GetMapping("/job")
+    public List<Employee> getByJobId(@RequestParam("jobId") Integer id) {
+        return employeeService.getByJobId(id);
+    }
+
     @GetMapping("/{id}")
     public Employee getById(@PathVariable Integer id) {
         return employeeService.getById(id);
@@ -37,6 +48,7 @@ public class EmployeeController {
     public Employee create(@RequestBody Employee employee) {
         return employeeService.create(employee);
     }
+
     @PostMapping("/dto")
     public Employee createWithDto(@RequestBody EmployeeRequest employeeRequest) {
         return employeeService.createWithDto(employeeRequest);

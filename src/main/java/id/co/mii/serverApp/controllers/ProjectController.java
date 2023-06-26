@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.co.mii.serverApp.models.Project;
@@ -25,6 +26,16 @@ public class ProjectController {
     @GetMapping
     public List<Project> getAll() {
         return projectService.getAll();
+    }
+
+    @GetMapping("/manager")
+    public List<Project> getByManagerId(@RequestParam("managerId") Integer id) {
+        return projectService.getByManagerId(id);
+    }
+
+    @GetMapping("/employee")
+    public List<Project> getByEmployeeId(@RequestParam("employeeId") Integer id) {
+        return projectService.getByEmployeeId(id);
     }
 
     @GetMapping("/{id}")

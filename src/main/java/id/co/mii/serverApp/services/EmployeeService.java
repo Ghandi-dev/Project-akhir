@@ -23,6 +23,14 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    public List<Employee> getByManagerId(Integer id) {
+        return employeeRepository.getByManagerId(id);
+    }
+    
+    public List<Employee> getByJobId(Integer id) {
+        return employeeRepository.getByJobId(id);
+    }
+
     public Employee getById(Integer id) {
         return employeeRepository
                 .findById(id)
@@ -34,6 +42,7 @@ public class EmployeeService {
     public Employee create(Employee employee) {
         return employeeRepository.save(employee);
     }
+
     public Employee createWithDto(EmployeeRequest employeeRequest) {
         Employee employee = modelMapper.map(employeeRequest, Employee.class);
         employee.setManager(getById(employeeRequest.getManagerId()));

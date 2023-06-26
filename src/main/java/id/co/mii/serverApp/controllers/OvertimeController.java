@@ -50,8 +50,8 @@ public class OvertimeController {
     }
 
     @PutMapping("/approve/{id}")
-    public Overtime approveOvertime(@PathVariable Integer id, @RequestBody Overtime overtime,
+    public Overtime approveOvertime(@PathVariable Integer id, @RequestParam ("projectId") Integer projectId,
             @RequestParam("role") String role) {
-        return overtimeService.approveOvertime(id, overtime, role);
+        return overtimeService.approveOvertime(id, projectId, role);
     }
 }

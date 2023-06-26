@@ -27,6 +27,14 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
+    public List<Project> getByManagerId(Integer id) {
+        return projectRepository.GetByManagerId(id);
+    }
+
+    public List<Project> getByEmployeeId(Integer id) {
+        return projectRepository.GetByEmployeeId(id);
+    }
+
     public Project getById(Integer id) {
         return projectRepository
                 .findById(id)
@@ -37,7 +45,6 @@ public class ProjectService {
 
     public Project create(ProjectRequest projectRequest) {
         Employee manager = employeeService.getById(projectRequest.getManagerId());
-        System.out.println(manager.getEmail());
         List<Employee> employees = projectRequest.getEmployeesId().stream().map(e -> employeeService.getById(e))
                 .collect(Collectors.toList());
         Project project = modelMapper.map(projectRequest, Project.class);
@@ -69,4 +76,5 @@ public class ProjectService {
         projectRepository.delete(project);
         return project;
     }
+
 }

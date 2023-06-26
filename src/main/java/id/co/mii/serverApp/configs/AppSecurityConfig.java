@@ -41,10 +41,11 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/login")
                 .permitAll()
-                .antMatchers("/activation", "/**")
+                .antMatchers("/activation")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
+                .permitAll()
+                // .authenticated()
                 .and()
                 .httpBasic();
     }

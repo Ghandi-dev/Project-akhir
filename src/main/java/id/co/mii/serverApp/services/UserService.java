@@ -2,6 +2,8 @@ package id.co.mii.serverApp.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,10 @@ public class UserService {
     private ModelMapper modelMapper;
     private RoleService roleService;
     private PasswordEncoder passwordEncoder;
+    private final VerificationTokenService verificationTokenService;
+    private EmailService emailService;
+    private JobService jobService;
+    private EmployeeService employeeService;
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -44,13 +50,33 @@ public class UserService {
 
         // set default role
         List<Role> roles = new ArrayList<>();
-        roles.add(roleService.getById(2));
+        roles.add(roleService.getById(3));
         user.setRoles(roles);
+        user.setIsEnabled(false);
 
+        // set Manager
+        employee.setManager(employeeService.getById(userRequest.getManagerId()));
+
+        // set Job
+        employee.setJob(jobService.getById(userRequest.getJobId()));
         // set password
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        return userRepository.save(user);
+        Optional<User> saved = Optional.of(userRepository.save(user));
+
+        saved.ifPresent(u -> {
+            try {
+                String token = UUID.randomUUID().toString();
+                verificationTokenService.save(saved.get(), token);
+                // send email
+                emailService.sendHtmlEmail(u, userRequest);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        return saved.get();
     }
 
     public User update(Integer id, User user) {
