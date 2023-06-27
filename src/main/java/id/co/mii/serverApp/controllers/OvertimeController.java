@@ -50,8 +50,14 @@ public class OvertimeController {
     }
 
     @PutMapping("/approve/{id}")
-    public Overtime approveOvertime(@PathVariable Integer id, @RequestParam ("projectId") Integer projectId,
+    public Overtime approveOvertime(@PathVariable Integer id, @RequestParam("projectId") Integer projectId,
             @RequestParam("role") String role) {
         return overtimeService.approveOvertime(id, projectId, role);
+    }
+
+    @PutMapping("/reject/{id}")
+    public Overtime rejectOvertime(@PathVariable Integer id, @RequestParam("projectId") Integer projectId,
+            @RequestParam("role") String role) {
+        return overtimeService.rejectOvertime(id, projectId, role);
     }
 }

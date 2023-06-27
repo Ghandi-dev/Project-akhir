@@ -86,4 +86,20 @@ public class OvertimeService {
         historyService.create(history);
         return response;
     }
+
+    public Overtime rejectOvertime(Integer id, Integer projectId, String role) {
+        History history = new History();
+        Overtime overtime = getById(id);
+        overtime.setStatus(OvertimeStatus.REJECTED);
+        try {
+            emailService.sendRejectedNotification(overtime, role);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Overtime response = update(id, overtime);
+        history.setOvertime(response);
+        history.setStatus(response.getStatus());
+        historyService.create(history);
+        return response;
+    }
 }

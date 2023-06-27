@@ -15,4 +15,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     @Query("SELECT r FROM Employee r WHERE r.job.id = ?1")
     public List<Employee> getByJobId(Integer id);
+
+    @Query("SELECT COUNT(r) FROM Employee r")
+    public Integer countEmployee();
 }

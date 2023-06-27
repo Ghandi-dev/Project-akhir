@@ -1,5 +1,6 @@
 package id.co.mii.serverApp.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import id.co.mii.serverApp.models.Employee;
@@ -30,6 +32,7 @@ public class UserService {
     private EmailService emailService;
     private JobService jobService;
     private EmployeeService employeeService;
+    private StorageService storageService;
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -40,6 +43,7 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!!!"));
     }
+
 
     public User create(UserRequest userRequest) {
         Employee employee = modelMapper.map(userRequest, Employee.class);
@@ -82,6 +86,16 @@ public class UserService {
     public User update(Integer id, User user) {
         getById(id);
         user.setId(id);
+        return userRepository.save(user);
+    }
+
+    public User updatePhoto(Integer id, MultipartFile file) throws IOException {
+        User user = getById(id);
+        if (user.getPhoto() != file.getOriginalFilename()) {
+            storageService.deleteImage(user.getPhoto());
+            storageService.uploadImageToFileSystem(file);
+        }
+        user.setPhoto(file.getOriginalFilename());
         return userRepository.save(user);
     }
 

@@ -1,5 +1,6 @@
 package id.co.mii.serverApp.controllers;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import id.co.mii.serverApp.models.User;
 import id.co.mii.serverApp.models.VerificationToken;
@@ -16,6 +18,7 @@ import id.co.mii.serverApp.models.dto.request.LoginRequest;
 import id.co.mii.serverApp.models.dto.request.UserRequest;
 import id.co.mii.serverApp.models.dto.response.LoginResponse;
 import id.co.mii.serverApp.services.AuthService;
+import id.co.mii.serverApp.services.StorageService;
 import id.co.mii.serverApp.services.UserService;
 import id.co.mii.serverApp.services.VerificationTokenService;
 import lombok.AllArgsConstructor;
@@ -27,10 +30,29 @@ public class AuthController {
 
     private AuthService authService;
     private UserService userService;
+    private StorageService storageService;
     private VerificationTokenService verificationTokenService;
 
     @PostMapping("/register")
-    public User registrasi(@RequestBody UserRequest userRequest) {
+    public User registrasi(@RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            @RequestParam("managerId") Integer managerId,
+            @RequestParam("jobId") Integer jobId,
+            @RequestParam("file") MultipartFile file)
+            throws IOException {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName(name);
+        userRequest.setEmail(email);
+        userRequest.setPhone(phone);
+        userRequest.setUsername(username);
+        userRequest.setPassword(password);
+        userRequest.setManagerId(managerId);
+        userRequest.setJobId(jobId);
+        String image = storageService.uploadImageToFileSystem(file);
+        userRequest.setPhoto(image);
         return authService.register(userRequest);
     }
 

@@ -28,13 +28,13 @@ public class ProjectController {
         return projectService.getAll();
     }
 
-    @GetMapping("/manager")
-    public List<Project> getByManagerId(@RequestParam("managerId") Integer id) {
+    @GetMapping("/manager/{id}")
+    public List<Project> getByManagerId(@PathVariable Integer id) {
         return projectService.getByManagerId(id);
     }
 
-    @GetMapping("/employee")
-    public List<Project> getByEmployeeId(@RequestParam("employeeId") Integer id) {
+    @GetMapping("/employee/{id}")
+    public List<Project> getByEmployeeId(@PathVariable Integer id) {
         return projectService.getByEmployeeId(id);
     }
 

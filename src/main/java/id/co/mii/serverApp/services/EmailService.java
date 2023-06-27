@@ -84,6 +84,18 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendRejectedNotification(Overtime overtime, String role) throws MessagingException {
+        Context context = new Context();
+        context.setVariable("role", role);
+        String body = templateEngine.process("notificationReject", context);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(overtime.getEmployee().getEmail());
+        helper.setSubject("Reject Notification");
+        helper.setText(body, true);
+        javaMailSender.send(message);
+    }
+
     // send notification project created to employee
     public void sendProjectNotification(List<Employee> employees) throws MessagingException {
         Context context = new Context();

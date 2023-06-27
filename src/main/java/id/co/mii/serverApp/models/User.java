@@ -2,6 +2,8 @@ package id.co.mii.serverApp.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,7 +34,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String photo;
 
     private Boolean isEnabled;
@@ -42,6 +44,10 @@ public class User {
     @JoinColumn(name = "id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Employee employee;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private VerificationToken token;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

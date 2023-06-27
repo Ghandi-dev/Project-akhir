@@ -26,7 +26,7 @@ public class EmployeeService {
     public List<Employee> getByManagerId(Integer id) {
         return employeeRepository.getByManagerId(id);
     }
-    
+
     public List<Employee> getByJobId(Integer id) {
         return employeeRepository.getByJobId(id);
     }
@@ -52,6 +52,15 @@ public class EmployeeService {
 
     public Employee update(Integer id, Employee employee) {
         getById(id);
+        employee.setId(id);
+        return employeeRepository.save(employee);
+    }
+
+    public Employee updateWithDto(Integer id, EmployeeRequest employeeRequest) {
+        getById(id);
+        Employee employee = modelMapper.map(employeeRequest, Employee.class);
+        employee.setManager(getById(employeeRequest.getManagerId()));
+        employee.setJob(jobService.getById(employeeRequest.getJobId()));
         employee.setId(id);
         return employeeRepository.save(employee);
     }
