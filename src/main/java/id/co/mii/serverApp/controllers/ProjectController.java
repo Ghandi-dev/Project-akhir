@@ -28,14 +28,14 @@ public class ProjectController {
         return projectService.getAll();
     }
 
-    @GetMapping("/manager/{id}")
-    public List<Project> getByManagerId(@PathVariable Integer id) {
-        return projectService.getByManagerId(id);
+    @GetMapping("/manager")
+    public List<Project> getByManagerId() {
+        return projectService.getByManagerId();
     }
 
-    @GetMapping("/employee/{id}")
-    public List<Project> getByEmployeeId(@PathVariable Integer id) {
-        return projectService.getByEmployeeId(id);
+    @GetMapping("/employee")
+    public List<Project> getByEmployeeId() {
+        return projectService.getByEmployeeId();
     }
 
     @GetMapping("/{id}")
@@ -51,8 +51,8 @@ public class ProjectController {
     @PutMapping("/{id}")
     public Project update(
             @PathVariable Integer id,
-            @RequestBody Project project) {
-        return projectService.update(id, project);
+            @RequestBody ProjectRequest projectRequest) {
+        return projectService.update(id, projectRequest);
     }
 
     @DeleteMapping("/{id}")

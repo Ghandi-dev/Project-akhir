@@ -58,21 +58,21 @@ public class AuthService {
         employee.setJob(jobService.getById(userRequest.getJobId()));
         // set password
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        
+
         Optional<User> saved = Optional.of(userRepository.save(user));
-        
+
         saved.ifPresent(u -> {
             try {
                 String token = UUID.randomUUID().toString();
                 verificationTokenService.save(saved.get(), token);
                 // send email
-                emailService.sendHtmlEmail(u,userRequest);
-                
+                emailService.sendHtmlEmail(u, userRequest);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        
+
         return saved.get();
     }
 

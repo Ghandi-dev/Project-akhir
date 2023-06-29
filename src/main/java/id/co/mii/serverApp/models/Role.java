@@ -2,6 +2,8 @@ package id.co.mii.serverApp.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +29,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false,length = 20)
+    @Column(nullable = false, length = 20)
     private String name;
 
     @ManyToMany(mappedBy = "roles")

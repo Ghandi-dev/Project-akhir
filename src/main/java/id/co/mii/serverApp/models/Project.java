@@ -56,6 +56,8 @@ public class Project {
     @Column(nullable = false)
     private Integer budget;
 
+    private Boolean isEnabled;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee manager;

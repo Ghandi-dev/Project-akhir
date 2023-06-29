@@ -16,7 +16,7 @@ public class JobService {
     private JobRepository jobRepository;
 
     public List<Job> getAll() {
-        return jobRepository.findAll();
+        return jobRepository.getAll();
     }
 
     public Job getById(Integer id) {

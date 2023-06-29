@@ -16,6 +16,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT r FROM Employee r WHERE r.job.id = ?1")
     public List<Employee> getByJobId(Integer id);
 
+    @Query("SELECT r FROM Employee r WHERE r.job.name = 'Manager' ")
+    public List<Employee> getManager();
+
+    @Query("SELECT r FROM Employee r WHERE r.job.name = 'HR' ")
+    public List<Employee> getHr();
+
+    @Query("SELECT r FROM Employee r WHERE r.job.name <> 'Hr' ")
+    public List<Employee> getAll();
+
     @Query("SELECT COUNT(r) FROM Employee r")
     public Integer countEmployee();
 }

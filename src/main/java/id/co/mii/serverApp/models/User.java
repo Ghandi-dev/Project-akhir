@@ -34,15 +34,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String photo;
-
     private Boolean isEnabled;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Employee employee;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

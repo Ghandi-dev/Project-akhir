@@ -43,6 +43,9 @@ public class Employee {
     @Column(length = 13)
     private String phone;
 
+    @Column(nullable = false)
+    private String photo;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manager_id")
     private Employee manager;

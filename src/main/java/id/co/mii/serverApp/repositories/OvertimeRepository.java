@@ -7,7 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import id.co.mii.serverApp.models.Overtime;
 
-public interface OvertimeRepository extends JpaRepository<Overtime,Integer>{
-    @Query("SELECT r FROM Overtime r WHERE r.employee.id = ?1")
+public interface OvertimeRepository extends JpaRepository<Overtime, Integer> {
+    @Query("SELECT r FROM Overtime r WHERE r.employee.id = ?1 ORDER BY id DESC")
     public List<Overtime> getByEmployeeId(Integer id);
+
+    @Query("SELECT r FROM Overtime r WHERE r.employee.manager.id = ?1 and r.status = 'PROCESS' ORDER BY id DESC")
+    public List<Overtime> getByManagerId(Integer id);
+
+    @Query("SELECT r FROM Overtime r WHERE r.status = 'APPROVED_MANAGER' ORDER BY id DESC")
+    public List<Overtime> getAllForHr();
 }

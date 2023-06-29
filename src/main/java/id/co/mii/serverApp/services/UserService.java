@@ -32,7 +32,6 @@ public class UserService {
     private EmailService emailService;
     private JobService jobService;
     private EmployeeService employeeService;
-    private StorageService storageService;
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -44,6 +43,11 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!!!"));
     }
 
+    public User getbyUsernameOrEmail(String username, String email) {
+        return userRepository
+                .findByUsernameOrEmployee_Email(username, email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!!!"));
+    }
 
     public User create(UserRequest userRequest) {
         Employee employee = modelMapper.map(userRequest, Employee.class);
@@ -89,19 +93,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updatePhoto(Integer id, MultipartFile file) throws IOException {
-        User user = getById(id);
-        if (user.getPhoto() != file.getOriginalFilename()) {
-            storageService.deleteImage(user.getPhoto());
-            storageService.uploadImageToFileSystem(file);
-        }
-        user.setPhoto(file.getOriginalFilename());
-        return userRepository.save(user);
-    }
-
     public User delete(Integer id) {
         User user = getById(id);
         userRepository.delete(user);
+        return user;
+    }
+
+    public User deleteUser(Integer id) {
+        User user = getById(id);
+        userRepository.deleteUser(id);
         return user;
     }
 }

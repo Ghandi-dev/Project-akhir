@@ -41,7 +41,7 @@ public class StorageService {
 
         // Atur header respons
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA); // Atur tipe konten sesuai dengan jenis file foto
+        headers.setContentType(MediaType.IMAGE_JPEG); // Atur tipe konten sesuai dengan jenis file foto
         headers.setContentLength(file.length());
 
         // Kembalikan file foto sebagai respons API

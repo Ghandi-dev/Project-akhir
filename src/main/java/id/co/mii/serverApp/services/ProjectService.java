@@ -5,13 +5,17 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import id.co.mii.serverApp.models.Employee;
 import id.co.mii.serverApp.models.Project;
+import id.co.mii.serverApp.models.User;
 import id.co.mii.serverApp.models.dto.request.ProjectRequest;
 import id.co.mii.serverApp.repositories.ProjectRepository;
+import id.co.mii.serverApp.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -22,17 +26,22 @@ public class ProjectService {
     private EmployeeService employeeService;
     private EmailService emailService;
     private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     public List<Project> getAll() {
         return projectRepository.findAll();
     }
 
-    public List<Project> getByManagerId(Integer id) {
-        return projectRepository.GetByManagerId(id);
+    public List<Project> getByManagerId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName());
+        return projectRepository.GetByManagerId(user.getId());
     }
 
-    public List<Project> getByEmployeeId(Integer id) {
-        return projectRepository.GetByEmployeeId(id);
+    public List<Project> getByEmployeeId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName());
+        return projectRepository.GetByEmployeeId(user.getId());
     }
 
     public Project getById(Integer id) {
@@ -59,9 +68,16 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project update(Integer id, Project project) {
+    public Project update(Integer id, ProjectRequest projectRequest) {
         getById(id);
+        Employee manager = employeeService.getById(projectRequest.getManagerId());
+        List<Employee> employees = projectRequest.getEmployeesId().stream().map(e -> employeeService.getById(e))
+                .collect(Collectors.toList());
+        Project project = modelMapper.map(projectRequest, Project.class);
+        project.setManager(manager);
         project.setId(id);
+        project.setEmployees(employees);
+
         return projectRepository.save(project);
     }
 

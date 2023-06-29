@@ -64,8 +64,8 @@ public class Overtime {
     private Employee employee;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "project_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JoinColumn(name = "project_id", nullable = false)
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Project project;
 
     @OneToMany(mappedBy = "overtime", cascade = CascadeType.ALL)

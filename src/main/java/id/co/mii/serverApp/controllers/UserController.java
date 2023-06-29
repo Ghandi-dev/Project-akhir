@@ -3,7 +3,6 @@ package id.co.mii.serverApp.controllers;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoProperties.Storage;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,6 +45,11 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @GetMapping("/")
+    public User getByUsernameOrEmail(@RequestParam("username") String username, @RequestParam String email) {
+        return userService.getbyUsernameOrEmail(username, email);
+    }
+
     @PostMapping
     public User create(@RequestBody UserRequest userRequest) {
         return userService.create(userRequest);
@@ -63,6 +67,11 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public User delete(@PathVariable Integer id) {
+        return userService.delete(id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public User deleteUser(@PathVariable Integer id) {
         return userService.delete(id);
     }
 }

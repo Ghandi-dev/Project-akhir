@@ -10,9 +10,9 @@ import id.co.mii.serverApp.models.Project;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
-    @Query("SELECT r FROM Project r WHERE r.manager.id = ?1")
+    @Query("SELECT r FROM Project r WHERE r.manager.id = ?1 ORDER BY r.id DESC")
     public List<Project> GetByManagerId(Integer id);
 
-    @Query("SELECT r.projects2 FROM Employee r WHERE r.id = ?1")
+    @Query("SELECT r.projects2 FROM Employee r WHERE r.id = ?1 ORDER BY r.id DESC")
     public List<Project> GetByEmployeeId(Integer id);
 }

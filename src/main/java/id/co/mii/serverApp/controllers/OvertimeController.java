@@ -27,9 +27,24 @@ public class OvertimeController {
         return overtimeService.getAll();
     }
 
+    @GetMapping("/hr")
+    public List<Overtime> getAllForHr() {
+        return overtimeService.getAllForHr();
+    }
+
     @GetMapping("/{id}")
     public Overtime getById(@PathVariable Integer id) {
         return overtimeService.getById(id);
+    }
+
+    @GetMapping("/employee")
+    public List<Overtime> getByEmployeeId() {
+        return overtimeService.getByEmployee();
+    }
+
+    @GetMapping("/manager")
+    public List<Overtime> getByManagerId() {
+        return overtimeService.getByManager();
     }
 
     @PostMapping
@@ -50,14 +65,12 @@ public class OvertimeController {
     }
 
     @PutMapping("/approve/{id}")
-    public Overtime approveOvertime(@PathVariable Integer id, @RequestParam("projectId") Integer projectId,
-            @RequestParam("role") String role) {
-        return overtimeService.approveOvertime(id, projectId, role);
+    public Overtime approveOvertime(@PathVariable Integer id) {
+        return overtimeService.approveOvertime(id);
     }
 
     @PutMapping("/reject/{id}")
-    public Overtime rejectOvertime(@PathVariable Integer id, @RequestParam("projectId") Integer projectId,
-            @RequestParam("role") String role) {
-        return overtimeService.rejectOvertime(id, projectId, role);
+    public Overtime rejectOvertime(@PathVariable Integer id) {
+        return overtimeService.rejectOvertime(id);
     }
 }

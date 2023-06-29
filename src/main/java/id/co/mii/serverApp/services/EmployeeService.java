@@ -1,13 +1,18 @@
 package id.co.mii.serverApp.services;
 
 import id.co.mii.serverApp.models.Employee;
+import id.co.mii.serverApp.models.User;
 import id.co.mii.serverApp.models.dto.request.EmployeeRequest;
 import id.co.mii.serverApp.repositories.EmployeeRepository;
+import id.co.mii.serverApp.repositories.UserRepository;
+
 import java.util.List;
 import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,17 +23,24 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     private JobService jobService;
     private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     public List<Employee> getAll() {
-        return employeeRepository.findAll();
+        return employeeRepository.getAll();
     }
 
-    public List<Employee> getByManagerId(Integer id) {
-        return employeeRepository.getByManagerId(id);
+    public List<Employee> getByManagerId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName());
+        return employeeRepository.getByManagerId(user.getId());
     }
 
     public List<Employee> getByJobId(Integer id) {
         return employeeRepository.getByJobId(id);
+    }
+
+    public List<Employee> getManager() {
+        return employeeRepository.getManager();
     }
 
     public Employee getById(Integer id) {

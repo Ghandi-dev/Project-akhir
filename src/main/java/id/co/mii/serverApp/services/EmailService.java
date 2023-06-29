@@ -61,7 +61,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         if (overtime.getStatus() == OvertimeStatus.APPROVED_MANAGER) {
-            helper.setTo(employeeService.getById(1).getEmail());
+            helper.setTo(employeeService.getById(42).getEmail());
             sendApprovedNotification(overtime, "manager");
         } else {
             helper.setTo(overtime.getEmployee().getManager().getEmail());
