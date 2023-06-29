@@ -51,6 +51,16 @@ public class EmployeeService {
                         "Employee not found!!!"));
     }
 
+    public Employee getForProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName());
+        return employeeRepository
+                .findById(user.getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Employee not found!!!"));
+    }
+
     public Employee create(Employee employee) {
         return employeeRepository.save(employee);
     }

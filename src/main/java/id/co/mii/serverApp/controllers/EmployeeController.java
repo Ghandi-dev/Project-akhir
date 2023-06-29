@@ -59,6 +59,11 @@ public class EmployeeController {
         return employeeService.getById(id);
     }
 
+    @GetMapping("/id")
+    public Employee getForProfile() {
+        return employeeService.getForProfile();
+    }
+
     @PostMapping
     public Employee create(@RequestBody Employee employee) {
         return employeeService.create(employee);
@@ -80,8 +85,10 @@ public class EmployeeController {
             @RequestBody Employee employee) {
         User user = userService.getById(id);
         List<Role> roles = new ArrayList<>();
-        if (employee.getJob().getId() == 2) {
+        if (employee.getJob().getName().equalsIgnoreCase("manager")) {
             roles.add(roleService.getById(2));
+        } else if (employee.getJob().getName().equalsIgnoreCase("hr")) {
+            roles.add(roleService.getById(1));
         } else {
             roles.add(roleService.getById(3));
         }

@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,6 +87,14 @@ public class UserService {
         });
 
         return saved.get();
+    }
+
+    public User updateUsernamePassword(User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loginUser = userRepository.findByUsername(authentication.getName());
+        getById(loginUser.getId());
+        user.setId(loginUser.getId());
+        return userRepository.save(user);
     }
 
     public User update(Integer id, User user) {
