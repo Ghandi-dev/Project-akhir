@@ -15,4 +15,13 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
     @Query("SELECT r.projects2 FROM Employee r WHERE r.id = ?1 ORDER BY r.id DESC")
     public List<Project> GetByEmployeeId(Integer id);
+
+    @Query("SELECT COUNT(r) FROM Project r")
+    public Integer countAll();
+
+    @Query("SELECT COUNT(r) FROM Project r WHERE r.manager.id = ?1")
+    public Integer countByManager(Integer id);
+
+    @Query(value = "SELECT COUNT(project_id) FROM tb_team_project u WHERE u.employee_id = ?1", nativeQuery = true)
+    public Integer countByEmployee(Integer id);
 }

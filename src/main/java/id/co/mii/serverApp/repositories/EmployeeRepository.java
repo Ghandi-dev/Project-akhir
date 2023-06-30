@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import id.co.mii.serverApp.models.Employee;
+import id.co.mii.serverApp.models.History;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+    public List<History> findAllByOrderByIdDesc();
+
     @Query("SELECT r FROM Employee r WHERE r.manager.id = ?1")
     public List<Employee> getByManagerId(Integer id);
 
@@ -22,7 +25,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT r FROM Employee r WHERE r.job.name = 'HR' ")
     public List<Employee> getHr();
 
-    @Query("SELECT r FROM Employee r WHERE r.job.name <> 'Hr' ")
+    @Query("SELECT r FROM Employee r WHERE r.job.name <> 'Hr' ORDER BY r.id DESC")
     public List<Employee> getAll();
 
     @Query("SELECT COUNT(r) FROM Employee r")

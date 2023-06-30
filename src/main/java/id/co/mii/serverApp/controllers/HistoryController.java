@@ -26,6 +26,21 @@ public class HistoryController {
         return historyService.getAll();
     }
 
+    @GetMapping("/employee")
+    public List<History> getAllByEmployee() {
+        return historyService.getAllByEmployee();
+    }
+
+    @GetMapping("/manager")
+    public List<History> getAllByManager() {
+        return historyService.getAllByManager();
+    }
+
+    @GetMapping("/news")
+    public List<History> newsData() {
+        return historyService.getHitoryNewProject();
+    }
+
     @GetMapping("/{id}")
     public History getById(@PathVariable Integer id) {
         return historyService.getById(id);
