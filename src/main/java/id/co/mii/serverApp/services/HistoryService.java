@@ -41,7 +41,8 @@ public class HistoryService {
     public List<History> getHitoryNewProject() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(authentication.getName());
-        return historyRepository.getHistoryNewProject(historyRepository.getNewOvertimeId(PageRequest.of(0, 1)),
+        return historyRepository.getHistoryNewProject(
+                historyRepository.getNewOvertimeId(user.getId(), PageRequest.of(0, 1)),
                 user.getId());
     }
 

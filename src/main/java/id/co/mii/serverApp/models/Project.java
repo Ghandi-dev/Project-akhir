@@ -66,7 +66,7 @@ public class Project {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Overtime> overtimes;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "tb_team_project", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
     private List<Employee> employees;
 }

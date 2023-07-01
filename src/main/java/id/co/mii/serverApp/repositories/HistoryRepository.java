@@ -20,6 +20,6 @@ public interface HistoryRepository extends JpaRepository<History, Integer> {
     @Query("SELECT r FROM History r WHERE r.overtime.employee.manager.id =?1 ORDER BY r.id  DESC")
     public List<History> getAllByManager(Integer id);
 
-    @Query("SELECT r.overtime.id FROM History r ORDER BY r.id DESC ")
-    public Integer getNewOvertimeId(PageRequest pageRequest);
+    @Query("SELECT r.overtime.id FROM History r WHERE r.overtime.employee.id = ?1 ORDER BY r.id DESC ")
+    public Integer getNewOvertimeId(Integer id,PageRequest pageRequest);
 }
